@@ -1,0 +1,6 @@
+[ubuntuservers]
+172.31.40.195 ansible_user=ubuntu
+
+[redhatservers]
+172.31.36.175 ansible_user=ec2-user
+

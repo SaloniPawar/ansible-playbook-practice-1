@@ -1,0 +1,45 @@
+-  hosts: ubuntuservers
+   remote_user: ubuntu
+   become_user: root
+   become_method: sudo
+   become: yes
+
+   vars:
+     service_name: apache2
+     package_name: apache2
+     destination_path: /var/www/html
+     index_file: index.html
+
+
+   tasks:
+     - name: install apache on ubuntu server
+       apt:
+         name: "{{package_name}}"
+         update_cache: yes
+         state: latest
+
+     - name: enable apache services
+       service:
+         enabled: true
+         name: "{{service_name}}"
+         state: started
+
+     - name: copy index.html from src to dest
+       copy:
+         src: "/etc/ansible/srcd/{{index_file}}"
+         dest: "{{destination_path}}/{{index_file}}"
+
+     - name: copy copy-config.conf from local to dest
+       copy:
+         src: "/etc/ansible/srcd/copy-config.conf"
+         dest: "/etc/apache2/sites-available/copy-config.conf"
+       notify: restart apache
+
+   handlers: 
+    - name: restart apache
+      service: 
+        name: "{{service_name}}"
+        state: restarted
+         
+
+ 
